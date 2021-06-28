@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Posts\CreatePostRequest;
 use App\Http\Requests\Api\Posts\UpdatePostRequest;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
-use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
@@ -20,7 +20,7 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if ($post === null) {
-            abort(404, 'Post not found!');
+            return response(['message' => 'Post not found!'], 404);
         }
 
         return new PostResource($post);
@@ -29,27 +29,31 @@ class PostController extends Controller
     public function store(CreatePostRequest $request)
     {
         $validateData = $request->validated();
+        $validateData['author_id'] = (int)$request->user()->id;
 
-        $post = Post::create([
-            'title' => $validateData['title'],
-            'body' => $validateData['body'],
-            'author_id' => 3, // TODO: Получить user_id
-        ]);
-
+        $post = Post::create($validateData);
         return new PostResource($post);
     }
 
     public function update(UpdatePostRequest $request, Post $post)
     {
         $post->update($request->validated());
-
         return new PostResource($post);
     }
 
     public function destroy(Post $post)
     {
         $post->delete();
+        return response()->noContent();
+    }
 
-        return response(null, Response::HTTP_NO_CONTENT);
+    public function comments(int $id)
+    {
+        $post = Post::find($id);
+        if ($post === null) {
+            return response(['message' => 'Post not found!'], 404);
+        }
+
+        return CommentResource::collection($post->comment);
     }
 }
