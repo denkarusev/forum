@@ -1,6 +1,5 @@
 <?php
 
-use Api\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,10 +18,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('posts', PostController::class)->only([
-    'index', 'show'
-]);
+Route::group(['namespace' => 'Api'], function () {
+    Route::group(['namespace' => 'Auth'], function () {
+        Route::post('register', 'RegisterController');
+        Route::post('login', 'LoginController');
+        Route::post('logout', 'LogoutController')->middleware('auth:api');
+    });
 
-Route::apiResource('posts', PostController::class)->only([
-    'create', 'store', 'update', 'destroy'
-]);
+    Route::resource('posts', PostController::class)->only([
+        'index', 'show'
+    ]);
+
+    Route::resource('posts', PostController::class)->only([
+        'create', 'store', 'update', 'destroy'
+    ])->middleware('auth:api');
+});
