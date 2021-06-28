@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     protected $table = 'comments';
+    protected $fillable = ['comment', 'author_id', 'post_id'];
 
     public function author(){
         return $this->belongsTo(User::class);

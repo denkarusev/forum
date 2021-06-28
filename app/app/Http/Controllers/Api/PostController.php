@@ -46,14 +46,4 @@ class PostController extends Controller
         $post->delete();
         return response()->noContent();
     }
-
-    public function comments(int $id)
-    {
-        $post = Post::find($id);
-        if ($post === null) {
-            return response(['message' => 'Post not found!'], 404);
-        }
-
-        return CommentResource::collection($post->comment);
-    }
 }

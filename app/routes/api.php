@@ -25,7 +25,11 @@ Route::group(['namespace' => 'Api'], function () {
         Route::post('logout', 'LogoutController')->middleware('auth:api');
     });
 
-    Route::resource('posts', 'PostController')->except(['index', 'show'])->middleware('auth:api');
-    Route::resource('posts', 'PostController')->only(['index', 'show']);
-    Route::get('posts/{id}/comments', 'PostController@comments');
+    Route::apiResource('posts', 'PostController')->except(['index', 'show'])
+        ->middleware('auth:api');
+    Route::apiResource('posts', 'PostController')->only(['index', 'show']);
+
+    Route::apiResource('posts.comments', 'PostCommentController')->except(['index', 'show'])
+        ->middleware('auth:api');
+    Route::apiResource('posts.comments', 'PostCommentController')->only(['index', 'show']);
 });
