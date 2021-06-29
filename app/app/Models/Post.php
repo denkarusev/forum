@@ -3,7 +3,11 @@
 namespace App\Models;
 
 use App\User;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Post
@@ -12,21 +16,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $title
  * @property int $author_id
  * @property string $body
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read User $author
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comment
+ * @property-read Collection|Comment[] $comment
  * @property-read int|null $comment_count
- * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Post query()
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereAuthorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereBody($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|Post newModelQuery()
+ * @method static Builder|Post newQuery()
+ * @method static Builder|Post query()
+ * @method static Builder|Post whereAuthorId($value)
+ * @method static Builder|Post whereBody($value)
+ * @method static Builder|Post whereCreatedAt($value)
+ * @method static Builder|Post whereId($value)
+ * @method static Builder|Post whereTitle($value)
+ * @method static Builder|Post whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class Post extends Model
 {

@@ -5,28 +5,41 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Posts\CreatePostRequest;
 use App\Http\Requests\Api\Posts\UpdatePostRequest;
-use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Exception;
 
 class PostController extends Controller
 {
-    public function index()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function index(): AnonymousResourceCollection
     {
         return PostResource::collection(Post::orderBy('id', 'DESC')->paginate(10));
     }
 
+    /**
+     * @param $id
+     * @return PostResource|JsonResponse
+     */
     public function show($id)
     {
         $post = Post::find($id);
         if ($post === null) {
-            return response(['message' => 'Post not found!'], 404);
+            return response()->json(['message' => 'Post not found!'], 404);
         }
 
         return new PostResource($post);
     }
 
-    public function store(CreatePostRequest $request)
+    /**
+     * @param CreatePostRequest $request
+     * @return PostResource
+     */
+    public function store(CreatePostRequest $request): PostResource
     {
         $validateData = $request->validated();
         $validateData['author_id'] = (int)$request->user()->id;
@@ -35,15 +48,25 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    /**
+     * @param UpdatePostRequest $request
+     * @param Post $post
+     * @return PostResource
+     */
+    public function update(UpdatePostRequest $request, Post $post): PostResource
     {
         $post->update($request->validated());
         return new PostResource($post);
     }
 
-    public function destroy(Post $post)
+    /**
+     * @param Post $post
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(Post $post): JsonResponse
     {
         $post->delete();
-        return response()->noContent();
+        return response()->json(['No content'], 204);
     }
 }

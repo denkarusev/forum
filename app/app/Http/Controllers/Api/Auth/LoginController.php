@@ -4,17 +4,22 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function __invoke(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function __invoke(Request $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
 
         if (!Auth::attempt($credentials)) {
-            return response([
+            return response()->json([
                 'message' => 'Неправильно указан логин или пароль',
                 'errors' => 'Неавторизован'
             ], 401);

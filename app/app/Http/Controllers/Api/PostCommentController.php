@@ -8,18 +8,29 @@ use App\Http\Requests\Api\Comments\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostCommentController extends Controller
 {
-    public function index(int $postId)
+    /**
+     * @param int $postId
+     * @return AnonymousResourceCollection
+     */
+    public function index(int $postId): AnonymousResourceCollection
     {
         return CommentResource::collection(Comment::wherePostId($postId)->paginate(10));
     }
 
+    /**
+     * @param CreateCommentRequest $request
+     * @param int $postId
+     * @return CommentResource|JsonResponse
+     */
     public function store(CreateCommentRequest $request, int $postId)
     {
         if (!Post::find($postId)) {
-            return response(['message' => 'Post not found!'], 404);
+            return response()->json(['message' => 'Post not found!'], 404);
         }
 
         $validateData = $request->validated();
@@ -30,36 +41,52 @@ class PostCommentController extends Controller
         return new CommentResource($comment);
     }
 
+    /**
+     * @param int $postId
+     * @param int $id
+     * @return CommentResource|JsonResponse
+     */
     public function show(int $postId, int $id)
     {
         if ($comment = Comment::whereId($id)->where('post_id', $postId)->first()) {
             return new CommentResource($comment);
         } else {
-            return response(['message' => 'Post or comment not found!'], 404);
+            return response()->json(['message' => 'Post or comment not found!'], 404);
         }
     }
 
+    /**
+     * @param UpdateCommentRequest $request
+     * @param int $postId
+     * @param int $id
+     * @return CommentResource|JsonResponse
+     */
     public function update(UpdateCommentRequest $request, int $postId, int $id)
     {
         if ($comment = Comment::whereId($id)->where('post_id', $postId)->first()) {
             $comment->update($request->validated());
             return new CommentResource($comment);
         } else {
-            return response(['message' => 'Post or comment not found!'], 404);
+            return response()->json(['message' => 'Post or comment not found!'], 404);
         }
     }
 
-    public function destroy(int $postId, int $id)
+    /**
+     * @param int $postId
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $postId, int $id): JsonResponse
     {
         try {
             if ($comment = Comment::whereId($id)->where('post_id', $postId)->first()) {
                 $comment->delete();
-                return response()->noContent();
+                return response()->json(['No content'], 204);
             } else {
-                return response(['message' => 'Post or comment not found!'], 404);
+                return response()->json(['message' => 'Post or comment not found!'], 404);
             }
         } catch (\Exception $e) {
-            return response(['message' => 'Comment doesn\'t belong to the post'], 400);
+            return response()->json(['message' => 'Comment doesn\'t belong to the post'], 400);
         }
     }
 }
