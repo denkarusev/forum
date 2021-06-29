@@ -6,20 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Comments\CreateCommentRequest;
 use App\Http\Requests\Api\Comments\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\PostCommentCollection;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostCommentController extends Controller
 {
     /**
      * @param int $postId
-     * @return AnonymousResourceCollection
+     * @return PostCommentCollection
      */
-    public function index(int $postId): AnonymousResourceCollection
+    public function index(int $postId): PostCommentCollection
     {
-        return CommentResource::collection(Comment::wherePostId($postId)->paginate(10));
+        return new PostCommentCollection(Comment::wherePostId($postId)->paginate(10));
     }
 
     /**

@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Posts\CreatePostRequest;
 use App\Http\Requests\Api\Posts\UpdatePostRequest;
+use App\Http\Resources\PostCollection;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Exception;
 
 class PostController extends Controller
 {
     /**
-     * @return AnonymousResourceCollection
+     * @return PostCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(): PostCollection
     {
-        return PostResource::collection(Post::orderBy('id', 'DESC')->paginate(10));
+        return new PostCollection(Post::orderBy('id', 'DESC')->paginate(10));
     }
 
     /**
