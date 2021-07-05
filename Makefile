@@ -29,7 +29,7 @@ build: ## Билд проекта
 	@docker-compose build --build-arg UID=$$(id -u) --build-arg GID=$$(id -g) mariadb
 	@docker-compose build --build-arg UID=$$(id -u) --build-arg GID=$$(id -g) adminer
 
-prepare-app: composer-install key-generate db-fresh clear-cache ## Первый запуск
+prepare-app: composer-install key-generate db-fresh passport-keys clear-cache ## Первый запуск
 	@echo -e "Make: App is completed. \n"
 
 up: ## Запуск проекта
@@ -46,6 +46,9 @@ composer-install: ## Установка composer
 
 key-generate: ## Генерирование ключа приложения
 	@docker-compose exec --user www-data php php artisan key:generate
+
+passport-keys: ## Генерирование ключей для passport
+	@docker-compose exec --user www-data php php artisan passport:install
 
 clear-cache:
 	@docker-compose exec --user www-data php php artisan config:clear
