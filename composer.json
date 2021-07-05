@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "~7.3.13",
+        "php": "~7.3",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
@@ -26,6 +26,9 @@
         "phpunit/phpunit": "^8.5.8|^9.3.3"
     },
     "config": {
+        "platform": {
+            "php": "7.3"
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
