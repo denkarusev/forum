@@ -26,3 +26,11 @@
 ```bash
 make up
 ```
+
+## <a name="errors"></a> Возможные ошибки
+Не удается найти APP_KEY
+
+Решение: 
+```bash
+make restart
+```
