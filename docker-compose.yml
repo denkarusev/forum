@@ -55,6 +55,6 @@ services:
       ADMINER_DEFAULT_SERVER: ${DB_HOST}
       ADMINER_DESIGN: pepa-linha
     ports:
-      - ${PROJECT_INTERFACE}:${ADMINER_PORT}:80
+      - ${PROJECT_INTERFACE}:${ADMINER_PORT}:8080
     env_file:
       - .env
