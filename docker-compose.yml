@@ -3,42 +3,38 @@ services:
 
   #PHP Service
   php:
-    image: ${COMPOSE_PROJECT_NAME}_php
-    container_name: ${COMPOSE_PROJECT_NAME}_php
-    user: ${CURRENT_USER}:${CURRENT_GROUP}
+    container_name: ${PROJECT_ID}_php
     build:
       context: ./docker/php
-      args:
-        WORKING_DIR: ${WORKING_DIR}
-        CURRENT_USER: ${CURRENT_USER}
-        CURRENT_GROUP: ${CURRENT_GROUP}
     volumes:
-      - ./:${WORKING_DIR}
+      - ./:/var/www/html
+      - ~/.composer:/var/www/.composer
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
     env_file:
       - .env
+    depends_on:
+      - mariadb
 
   #Nginx Service
   nginx:
-    image: nginx:alpine
-    container_name: ${COMPOSE_PROJECT_NAME}_nginx
+    container_name: ${PROJECT_ID}_nginx
+    build:
+      context: ./docker/nginx
     ports:
-      - ${OUT_HTTP_PORT}:80
-      - ${OUT_HTTPS_PORT}:443
+      - ${PROJECT_INTERFACE}:${NGINX_EXTERNAL_PORT}:80
     volumes:
-      - ./:${WORKING_DIR}
+      - ./public:/var/www/html/public
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
     env_file:
       - .env
+    depends_on:
+      - php
 
   #MariaDB Service
   mariadb:
-    container_name: ${COMPOSE_PROJECT_NAME}_mariadb
+    container_name: ${PROJECT_ID}_mariadb
     build:
       context: ./docker/mariadb
-      args:
-        CURRENT_USER: ${CURRENT_USER}
-        CURRENT_GROUP: ${CURRENT_GROUP}
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
@@ -54,11 +50,11 @@ services:
   #Adminer Service
   adminer:
     image: adminer:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_adminer
+    container_name: ${PROJECT_ID}_adminer
     environment:
       ADMINER_DEFAULT_SERVER: ${DB_HOST}
       ADMINER_DESIGN: pepa-linha
     ports:
-      - ${ADMINER_PORT}:8080
+      - ${PROJECT_INTERFACE}:${ADMINER_PORT}:80
     env_file:
       - .env
