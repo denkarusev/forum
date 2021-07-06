@@ -75,7 +75,19 @@ install: ## Установка проекта
 db-fresh: ## Пересборка БД + сидеры
 	@docker-compose exec --user www-data php php artisan migrate:fresh --seed --force
 
-test:
-	@docker-compose exec --user www-data php vendor/bin/phpunit  -v
+clear: ## Сброс всех видов кэшей
+	@docker-compose exec --user www-data php php artisan optimize:clear
+	@docker-compose exec --user www-data php php artisan config:clear
+	@docker-compose exec --user www-data php php artisan route:clear
+	@docker-compose exec --user www-data php php artisan event:clear
+	@docker-compose exec --user www-data php php artisan view:clear
+	@docker-compose exec --user www-data php php artisan cache:clear
+
+test: clear ## Запуск тестов
+	@docker-compose exec --user www-data php php artisan test
+
+create-test-db: ## Создание тестовой базы данных
+	@docker-compose exec mariadb mysql -u$(DB_USERNAME) -p$(DB_ROOT_PASSWORD) -e 'CREATE DATABASE ${DB_DATABASE}_test'
+	@echo "База данных $(DB_DATABASE)_test создана"
 
 default: help
