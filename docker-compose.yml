@@ -41,6 +41,8 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       DB_PORT: ${DB_PORT}
+    ports:
+      - ${PROJECT_INTERFACE}:${DB_EXTERNAL_PORT}:${DB_PORT}
     volumes:
       - ./docker/mariadb/config:/etc/mysql/conf.d
       - ./docker/mariadb/data:/var/lib/mysql:rw

@@ -13,3 +13,5 @@ yarn-error.log
 /.idea
 *.DS_Store
 .env.testing
+.php_cs.cache
+.php-cs-fixer.cache
