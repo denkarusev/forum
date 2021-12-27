@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ 7.3 ]
+        php-version: [ 7.4 ]
     services:
       mysql-service:
         image: mariadb:10.5
