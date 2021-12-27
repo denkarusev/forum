@@ -86,6 +86,9 @@ clear: ## Сброс всех видов кэшей
 test: clear ## Запуск тестов
 	@docker-compose exec --user www-data php php artisan test
 
+bash: ## Запуск консоли
+	@docker-compose exec --user www-data php bash
+
 create-test-db: ## Создание тестовой базы данных
 	@docker-compose exec mariadb mysql -u$(DB_USERNAME) -p$(DB_ROOT_PASSWORD) -e 'CREATE DATABASE ${DB_DATABASE}_test'
 	@echo "База данных $(DB_DATABASE)_test создана"
